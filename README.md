@@ -1,5 +1,4 @@
 # n-Least Significant Bit(s) Steganography
-n-Least Significant Bit(s) Steganography
 
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/mtabidze/nLSBs-Steganography.svg?branch=main)](https://github.com/mtabidze/nLSBs-Steganography/commits/main)
 [![Testing Workflow Status](https://github.com/mtabidze/nLSBs-Steganography/actions/workflows/testing-flow.yml/badge.svg?branch=main)](https://github.com/mtabidze/llm-co-writer/actions/workflows/testing-flow.yml)
