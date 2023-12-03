@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "nlsbs-steganography"
+version = "0.1.0"
+description = "n-Least Significant Bit(s) Steganography."
+license = "MIT"
+authors = ["Mikheil Tabidze <m.tabidze@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/mtabidze/nLSBs-Steganography"
+
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pip = "^23.3.1"
+setuptools = "^69.0.2"
+pillow = "^10.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-random-order = "^1.1.0"
+pytest-asyncio = "^0.20.3"
+coverage = "^7.3.2"
+mock = "^5.1.0"
+bandit = "^1.7.5"
+pip-audit = "^2.6.1"
+pip-licenses = "^4.3.3"
+flake8 = "^6.1.0"
+flake8-bugbear = "^23.11.28"
+flake8-copyright = "^0.2.4"
+pylama = "^8.4.1"
+ruff = "^0.0.290"
+black = "^23.11.0"
+isort = "^5.12.0"
+
+
+[tool.isort]
+profile = "black"
+
+
+[tool.pylama.linter.mccabe]
+max-complexity = 16
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
