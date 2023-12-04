@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "nlsbs-steganography"
 version = "0.1.0"
-description = "n-Least Significant Bit(s) Steganography."
+description = "n-Least Significant Bit(s) Steganography is a versatile Python library designed for seamless message insertion and extraction within images using the n-Least Significant Bits technique."
 license = "MIT"
 authors = ["Mikheil Tabidze <m.tabidze@gmail.com>"]
 readme = "README.md"
@@ -31,6 +31,7 @@ pylama = "^8.4.1"
 ruff = "^0.0.290"
 black = "^23.11.0"
 isort = "^5.12.0"
+line-profiler = "^4.1.2"
 
 
 [tool.isort]
