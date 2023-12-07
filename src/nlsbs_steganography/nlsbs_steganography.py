@@ -35,16 +35,12 @@ def insertion(image: Image, message: str, bits_to_use: int = 1) -> Image:
     for y in range(image.height):
         for x in range(image.width):
             pixel = list(image.getpixel(xy=(x, y)))
-            for i in range(bits_to_use):
-                pixel_value = format(pixel[-1], "08b")
-                left_end = 8 - i - 1
-                right_start = 8 - i
-                update_value = (
-                    pixel_value[:left_end]
-                    + binary_message[index]
-                    + pixel_value[right_start:8]
-                )
-                pixel[-1] = int(update_value, 2)
+            for bit_index in range(bits_to_use):
+                new_bit_value = int(binary_message[index], 2)
+                color_value = pixel[-1]
+                clear_bit_color = color_value & ~(1 << bit_index)
+                new_color_value = clear_bit_color | (new_bit_value << bit_index)
+                pixel[-1] = new_color_value
                 image.putpixel(xy=(x, y), value=tuple(pixel))
                 index += 1
                 if index >= binary_message_length:
@@ -73,10 +69,10 @@ def extraction(image: Image, bits_to_use: int = 1) -> str:
     for y in range(image.height):
         for x in range(image.width):
             pixel = list(image.getpixel(xy=(x, y)))
-            for i in range(bits_to_use):
-                pixel_value = format(pixel[-1], "08b")
-                extracted_bit = pixel_value[8 - i - 1]
-                character_buffer += extracted_bit
+            for bit_index in range(bits_to_use):
+                color_value = pixel[-1]
+                extracted_bit = (color_value << bit_index) & 1
+                character_buffer += str(extracted_bit)
                 index += 1
                 if index % 8 == 0:
                     if character_buffer == DELIMITER:
