@@ -71,7 +71,7 @@ def extraction(image: Image, bits_to_use: int = 1) -> str:
             pixel = list(image.getpixel(xy=(x, y)))
             for bit_index in range(bits_to_use):
                 color_value = pixel[-1]
-                extracted_bit = (color_value << bit_index) & 1
+                extracted_bit = (color_value >> bit_index) & 1
                 character_buffer += str(extracted_bit)
                 index += 1
                 if index % 8 == 0:
