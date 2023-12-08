@@ -38,20 +38,21 @@ def insertion(image: Image, message: str, bits_to_use: int = 1) -> Image:
     index = 0
     for y in range(image.height):
         for x in range(image.width):
-            pixel = image_array[y, x, :].tolist()
+            pixel = image_array[y, x].tolist()
+            color_value = pixel[-1]
             for bit_index in range(bits_to_use):
                 new_bit_value = int(binary_message[index], 2)
-                color_value = pixel[-1]
-                clear_bit_color = color_value & ~(1 << bit_index)
-                new_color_value = clear_bit_color | (new_bit_value << bit_index)
-                pixel[-1] = new_color_value
-                image_array[y, x, :] = pixel
+                extracted_bit = (color_value >> bit_index) & 1
+                if new_bit_value != extracted_bit:
+                    clear_bit_color = color_value & ~(1 << bit_index)
+                    color_value = clear_bit_color | (new_bit_value << bit_index)
+                    pixel[-1] = color_value
+                    image_array[y, x] = pixel
                 index += 1
                 if index >= binary_message_length:
                     new_image = Image.fromarray(obj=image_array, mode=image_mode)
                     return new_image
-    new_image = Image.fromarray(obj=image_array, mode=image_mode)
-    return new_image
+    raise MessageInsertionError(f"Error insertion message at index {index}")
 
 
 def extraction(image: Image, bits_to_use: int = 1) -> str:
@@ -98,6 +99,12 @@ def extraction(image: Image, bits_to_use: int = 1) -> str:
 
 class InvalidBitsToUseError(Exception):
     """Raised when the specified number of bits to use is invalid."""
+
+    pass
+
+
+class MessageInsertionError(Exception):
+    """Raised when the message insertion fails."""
 
     pass
 
