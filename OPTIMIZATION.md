@@ -10,8 +10,8 @@ Benchmarking results for the functions were measured using the **timeit** librar
 
 | Function   | Repetitions | Baseline Time (seconds) |
 |------------|-------------|-------------------------|
-| insertion  | 1000        | 2.608868667000934       |
-| extraction | 1000        | 1.2318516250015819      |
+| insertion  | 1000        | 2.61                    |
+| extraction | 1000        | 1.23                    |
 
 ### Profiling
 Profiling results for the functions were obtained using the **line_profiler** library.
@@ -130,8 +130,8 @@ Benchmarking results for the optimized functions are provided in this section.
 
 | Function   | Repetitions | Baseline Time (seconds) | Execution Time (seconds) | Optimization Gain (%) |
 |------------|-------------|-------------------------|--------------------------|-----------------------|
-| insertion  | 1000        | 2.608868667000934       | 1.9858440839961986       | 23.88                 |
-| extraction | 1000        | 1.2318516250015819      | 0.9645964999945136       | 21.70                 |
+| insertion  | 1000        | 2.61                    | 1.99                     | 23.88                 |
+| extraction | 1000        | 1.23                    | 0.96                     | 21.70                 |
 
 ### Profiling
 Profiling results for the optimized functions are provided in this section.
@@ -236,4 +236,127 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     86                                                                   ) from None
     87       445      28000.0     62.9      0.6                      character_buffer = ""
     88                                               raise MessageNotFoundError("Hidden message not found in the image.")
+```
+
+## Optimization #2
+This section presents the optimization results achieved by using the **NumPy** library.
+
+### Benchmarking
+Benchmarking results for the optimized functions are provided in this section.
+
+| Function   | Repetitions | Baseline Time (seconds) | Execution Time (seconds) | Optimization Gain (%) |
+|------------|-------------|-------------------------|--------------------------|-----------------------|
+| insertion  | 1000        | 2.61                    | 1.68                     | 35.65                 |
+| extraction | 1000        | 1.23                    | 0.79                     | 35.81                 |
+
+### Profiling
+Profiling results for the optimized functions are provided in this section.
+
+1. **insertion** function stats
+```log
+Timer unit: 1e-09 s
+
+Total time: 0.017477 s
+File: nlsbs_steganography.py
+Function: insertion at line 10
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    10                                           def insertion(image: Image, message: str, bits_to_use: int = 1) -> Image:
+    11                                               """
+    12                                               Least Significant Bit (LSB) insertion of a message into an image.
+    13                                           
+    14                                               Parameters:
+    15                                               - image (Image): The input image to which message will be inserted.
+    16                                               - message (str): The message to be inserted into the image.
+    17                                               - bits_to_use (int, optional): The number of least significant bits
+    18                                                   to use for insertion. Default is 1.
+    19                                           
+    20                                               Returns:
+    21                                               - image (Image): The resulting image with the message inserted.
+    22                                               """
+    23         1       1000.0   1000.0      0.0      if not 1 <= bits_to_use <= 8:
+    24                                                   raise InvalidBitsToUseError("Bits to use must be between 1 and 8.")
+    25                                           
+    26         1          0.0      0.0      0.0      binary_message = (
+    27         1     245000.0 245000.0      1.4          "".join([format(byte, "08b") for byte in message.encode()]) + DELIMITER
+    28                                               )
+    29         1       1000.0   1000.0      0.0      binary_message_length = len(binary_message)
+    30         1       2000.0   2000.0      0.0      min_required_pixels = math.ceil(binary_message_length / bits_to_use)
+    31         1       5000.0   5000.0      0.0      total_image_pixels = image.width * image.height
+    32         1       1000.0   1000.0      0.0      if min_required_pixels > total_image_pixels:
+    33                                                   raise InsufficientPixelsError("Message size exceeds image pixels capacity.")
+    34                                           
+    35         1     818000.0 818000.0      4.7      image_array = np.array(image, dtype=np.uint8)
+    36         1       2000.0   2000.0      0.0      image_mode = image.mode
+    37                                           
+    38         1          0.0      0.0      0.0      index = 0
+    39        18      11000.0    611.1      0.1      for y in range(image.height):
+    40      1801     669000.0    371.5      3.8          for x in range(image.width):
+    41      1784    1265000.0    709.1      7.2              pixel = image_array[y, x, :].tolist()
+    42      5351    2063000.0    385.5     11.8              for bit_index in range(bits_to_use):
+    43      3568    1737000.0    486.8      9.9                  new_bit_value = int(binary_message[index], 2)
+    44      3568    1230000.0    344.7      7.0                  color_value = pixel[-1]
+    45      3568    1453000.0    407.2      8.3                  clear_bit_color = color_value & ~(1 << bit_index)
+    46      3568    1448000.0    405.8      8.3                  new_color_value = clear_bit_color | (new_bit_value << bit_index)
+    47      3568    1127000.0    315.9      6.4                  pixel[-1] = new_color_value
+    48      3568    2403000.0    673.5     13.7                  image_array[y, x, :] = pixel
+    49      3568    1395000.0    391.0      8.0                  index += 1
+    50      3568    1218000.0    341.4      7.0                  if index >= binary_message_length:
+    51         1     383000.0 383000.0      2.2                      new_image = Image.fromarray(obj=image_array, mode=image_mode)
+    52         1          0.0      0.0      0.0                      return new_image
+    53                                               new_image = Image.fromarray(obj=image_array, mode=image_mode)
+    54                                               return new_image
+```
+
+**extraction** function stats
+```log
+Timer unit: 1e-09 s
+
+Total time: 0.010928 s
+File: nlsbs_steganography.py
+Function: extraction at line 57
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    57                                           def extraction(image: Image, bits_to_use: int = 1) -> str:
+    58                                               """
+    59                                               Least Significant Bit (LSB) extraction of a message from the image.
+    60                                           
+    61                                               Parameters:
+    62                                               - image (Image): The image from which message will be extracted.
+    63                                               - bits_to_use (int, optional): The number of least significant bits
+    64                                                   used for insertion. Default is 1.
+    65                                           
+    66                                               Returns:
+    67                                               - message (str): The extracted message from the image.
+    68                                               """
+    69         1       3000.0   3000.0      0.0      if not 1 <= bits_to_use <= 8:
+    70                                                   raise InvalidBitsToUseError("Bits to use must be between 1 and 8.")
+    71                                           
+    72         1     236000.0 236000.0      2.2      image_array = np.asarray(a=image, dtype=int)
+    73                                           
+    74         1       3000.0   3000.0      0.0      message_characters = []
+    75         1       1000.0   1000.0      0.0      index = 0
+    76         1          0.0      0.0      0.0      character_buffer = []
+    77        18      10000.0    555.6      0.1      for y in range(image.height):
+    78      1801     619000.0    343.7      5.7          for x in range(image.width):
+    79      1784     861000.0    482.6      7.9              color_value = image_array[y, x, -1]
+    80      5351    2043000.0    381.8     18.7              for bit_index in range(bits_to_use):
+    81      3568    1632000.0    457.4     14.9                  extracted_bit = (color_value >> bit_index) & 1
+    82      3568    1859000.0    521.0     17.0                  character_buffer.append(str(extracted_bit))
+    83      3568    1400000.0    392.4     12.8                  index += 1
+    84      3568    1333000.0    373.6     12.2                  if index % 8 == 0:
+    85       446     144000.0    322.9      1.3                      if "1" not in character_buffer:
+    86         1       4000.0   4000.0      0.0                          message = "".join(message_characters)
+    87         1          0.0      0.0      0.0                          return message
+    88       445     124000.0    278.7      1.1                      try:
+    89       445     254000.0    570.8      2.3                          character_code = int("".join(character_buffer), 2)
+    90       445     213000.0    478.7      1.9                          message_characters.append(chr(character_code))
+    91                                                               except ValueError:
+    92                                                                   raise MessageExtractionError(
+    93                                                                       f"Error extracting message at index {index}"
+    94                                                                   ) from None
+    95       445     189000.0    424.7      1.7                      character_buffer.clear()
+    96                                               raise MessageNotFoundError("Hidden message not found in the image.")
 ```
