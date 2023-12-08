@@ -16,10 +16,8 @@ Benchmarking results for the functions were measured using the **timeit** librar
 ### Profiling
 Profiling results for the functions were obtained using the **line_profiler** library.
 
-<details>
-    <summary><b>insertion</b> function stats</summary>
-
-  ```log
+1. **insertion** function stats
+```log
 Timer unit: 1e-09 s
 
 Total time: 0.010802 s
@@ -72,13 +70,10 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     50      3568     384000.0    107.6      3.6                  if index >= binary_message_length:
     51         1          0.0      0.0      0.0                      return image
     52                                               return image
-  ```
-</details>
+```
 
-<details>
-    <summary><b>extraction</b> function stats</summary>
-
-  ```log
+**extraction** function stats
+```log
 Timer unit: 1e-09 s
 
 Total time: 0.004826 s
@@ -125,9 +120,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     90                                                                   ) from None
     91       445      35000.0     78.7      0.7                      character_buffer = ""
     92                                               raise MessageNotFoundError("Hidden message not found in the image.")
-  ```
-</details>
-
+```
 
 ## Optimization #1
 This section presents the optimization results achieved by replacing string manipulations with bitwise operations.
@@ -143,10 +136,8 @@ Benchmarking results for the optimized functions are provided in this section.
 ### Profiling
 Profiling results for the optimized functions are provided in this section.
 
-<details>
-    <summary><b>insertion</b> function stats</summary>
-
-  ```log
+1. **insertion** function stats
+```log
 Timer unit: 1e-09 s
 
 Total time: 0.008801 s
@@ -195,13 +186,10 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     46      3568     444000.0    124.4      4.8                  if index >= binary_message_length:
     47         1          0.0      0.0      0.0                      return image
     48                                               return image
-  ```
-</details>
+```
 
-<details>
-    <summary><b>extraction</b> function stats</summary>
-
-  ```log
+**extraction** function stats
+```log
 Timer unit: 1e-09 s
 
 Total time: 0.004595 s
@@ -248,8 +236,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     86                                                                   ) from None
     87       445      28000.0     62.9      0.6                      character_buffer = ""
     88                                               raise MessageNotFoundError("Hidden message not found in the image.")
-  ```
-</details>
+```
 
 ## Optimization #2
 This section presents the optimization results achieved by using the **NumPy** library.
@@ -265,10 +252,8 @@ Benchmarking results for the optimized functions are provided in this section.
 ### Profiling
 Profiling results for the optimized functions are provided in this section.
 
-<details>
-    <summary><b>insertion</b> function stats</summary>
-
-  ```log
+1. **insertion** function stats
+```log
 Timer unit: 1e-09 s
 
 Total time: 0.017477 s
@@ -322,13 +307,10 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     52         1          0.0      0.0      0.0                      return new_image
     53                                               new_image = Image.fromarray(obj=image_array, mode=image_mode)
     54                                               return new_image
-  ```
-</details>
+```
 
-<details>
-    <summary><b>extraction</b> function stats</summary>
-
-  ```log
+**extraction** function stats
+```log
 Timer unit: 1e-09 s
 
 Total time: 0.010928 s
@@ -377,5 +359,4 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     94                                                                   ) from None
     95       445     189000.0    424.7      1.7                      character_buffer.clear()
     96                                               raise MessageNotFoundError("Hidden message not found in the image.")
-  ```
-</details>
+```
