@@ -55,7 +55,7 @@ image_with_message = insertion(
     number = 1000
     execution_time = timeit.timeit(stmt=statement, setup=setup, number=number)
 
-    print(f"Execution time the insertion 'extraction' in seconds: {execution_time}")
+    print(f"Execution time the 'extraction' in seconds: {execution_time}")
 
 
 if __name__ == "__main__":

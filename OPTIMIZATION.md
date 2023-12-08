@@ -131,7 +131,7 @@ Benchmarking results for the optimized functions are provided in this section.
 | Function   | Repetitions | Baseline Time (seconds) | Execution Time (seconds) | Optimization Gain (%) |
 |------------|-------------|-------------------------|--------------------------|-----------------------|
 | insertion  | 1000        | 2.608868667000934       | 1.9858440839961986       | 23.88                 |
-| extraction | 1000        | 1.2318516250015819      | 0.2667665000044508       | 78.34                 |
+| extraction | 1000        | 1.2318516250015819      | 0.9645964999945136       | 21.70                 |
 
 ### Profiling
 Profiling results for the optimized functions are provided in this section.
@@ -163,27 +163,27 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     23                                                   raise InvalidBitsToUseError("Bits to use must be between 1 and 8.")
     24                                           
     25         1          0.0      0.0      0.0      binary_message = (
-    26         1      88000.0  88000.0      1.0          "".join([format(byte, "08b") for byte in message.encode()]) + DELIMITER
+    26         1      96000.0  96000.0      1.0          "".join([format(byte, "08b") for byte in message.encode()]) + DELIMITER
     27                                               )
     28         1          0.0      0.0      0.0      binary_message_length = len(binary_message)
-    29         1       1000.0   1000.0      0.0      min_required_pixels = math.ceil(binary_message_length / bits_to_use)
-    30         1       2000.0   2000.0      0.0      total_image_pixels = image.width * image.height
+    29         1       2000.0   2000.0      0.0      min_required_pixels = math.ceil(binary_message_length / bits_to_use)
+    30         1       3000.0   3000.0      0.0      total_image_pixels = image.width * image.height
     31         1          0.0      0.0      0.0      if min_required_pixels > total_image_pixels:
     32                                                   raise InsufficientPixelsError("Message size exceeds image pixels capacity.")
     33                                           
     34         1          0.0      0.0      0.0      index = 0
-    35        18       1000.0     55.6      0.0      for y in range(image.height):
-    36      1801     150000.0     83.3      1.7          for x in range(image.width):
-    37      1784    1513000.0    848.1     17.2              pixel = list(image.getpixel(xy=(x, y)))
-    38      5351     606000.0    113.2      6.9              for bit_index in range(bits_to_use):
-    39      3568     523000.0    146.6      5.9                  new_bit_value = int(binary_message[index], 2)
-    40      3568     372000.0    104.3      4.2                  color_value = pixel[-1]
-    41      3568     412000.0    115.5      4.7                  clear_bit_color = color_value & ~(1 << bit_index)
-    42      3568     411000.0    115.2      4.7                  new_color_value = clear_bit_color | (new_bit_value << bit_index)
-    43      3568     353000.0     98.9      4.0                  pixel[-1] = new_color_value
-    44      3568    3584000.0   1004.5     40.7                  image.putpixel(xy=(x, y), value=tuple(pixel))
-    45      3568     353000.0     98.9      4.0                  index += 1
-    46      3568     431000.0    120.8      4.9                  if index >= binary_message_length:
+    35        18       3000.0    166.7      0.0      for y in range(image.height):
+    36      1801     138000.0     76.6      1.5          for x in range(image.width):
+    37      1784    1619000.0    907.5     17.6              pixel = list(image.getpixel(xy=(x, y)))
+    38      5351     611000.0    114.2      6.7              for bit_index in range(bits_to_use):
+    39      3568     566000.0    158.6      6.2                  new_bit_value = int(binary_message[index], 2)
+    40      3568     412000.0    115.5      4.5                  color_value = pixel[-1]
+    41      3568     415000.0    116.3      4.5                  clear_bit_color = color_value & ~(1 << bit_index)
+    42      3568     432000.0    121.1      4.7                  new_color_value = clear_bit_color | (new_bit_value << bit_index)
+    43      3568     344000.0     96.4      3.7                  pixel[-1] = new_color_value
+    44      3568    3688000.0   1033.6     40.2                  image.putpixel(xy=(x, y), value=tuple(pixel))
+    45      3568     404000.0    113.2      4.4                  index += 1
+    46      3568     444000.0    124.4      4.8                  if index >= binary_message_length:
     47         1          0.0      0.0      0.0                      return image
     48                                               return image
 ```
@@ -192,7 +192,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 ```log
 Timer unit: 1e-09 s
 
-Total time: 0.001406 s
+Total time: 0.004595 s
 File: nlsbs_steganography.py
 Function: extraction at line 51
 
@@ -216,24 +216,24 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     66         1          0.0      0.0      0.0      message = ""
     67         1          0.0      0.0      0.0      index = 0
     68         1          0.0      0.0      0.0      character_buffer = ""
-    69         5       1000.0    200.0      0.1      for y in range(image.height):
-    70       504      47000.0     93.3      3.3          for x in range(image.width):
-    71       500     460000.0    920.0     32.7              pixel = list(image.getpixel(xy=(x, y)))
-    72      1499     192000.0    128.1     13.7              for bit_index in range(bits_to_use):
-    73      1000      77000.0     77.0      5.5                  color_value = pixel[-1]
-    74      1000     119000.0    119.0      8.5                  extracted_bit = (color_value << bit_index) & 1
-    75      1000     195000.0    195.0     13.9                  character_buffer += str(extracted_bit)
-    76      1000     115000.0    115.0      8.2                  index += 1
-    77      1000     122000.0    122.0      8.7                  if index % 8 == 0:
-    78       125      11000.0     88.0      0.8                      if character_buffer == DELIMITER:
+    69        18       3000.0    166.7      0.1      for y in range(image.height):
+    70      1801     153000.0     85.0      3.3          for x in range(image.width):
+    71      1784    1506000.0    844.2     32.8              pixel = list(image.getpixel(xy=(x, y)))
+    72      5351     619000.0    115.7     13.5              for bit_index in range(bits_to_use):
+    73      3568     299000.0     83.8      6.5                  color_value = pixel[-1]
+    74      3568     431000.0    120.8      9.4                  extracted_bit = (color_value >> bit_index) & 1
+    75      3568     634000.0    177.7     13.8                  character_buffer += str(extracted_bit)
+    76      3568     355000.0     99.5      7.7                  index += 1
+    77      3568     351000.0     98.4      7.6                  if index % 8 == 0:
+    78       446      43000.0     96.4      0.9                      if character_buffer == DELIMITER:
     79         1          0.0      0.0      0.0                          return message
-    80       124       7000.0     56.5      0.5                      try:
-    81       124      17000.0    137.1      1.2                          character_code = int(character_buffer, 2)
-    82       124      32000.0    258.1      2.3                          message += chr(character_code)
+    80       445      31000.0     69.7      0.7                      try:
+    81       445      68000.0    152.8      1.5                          character_code = int(character_buffer, 2)
+    82       445      74000.0    166.3      1.6                          message += chr(character_code)
     83                                                               except ValueError:
     84                                                                   raise MessageExtractionError(
     85                                                                       f"Error extracting message at index {index}"
     86                                                                   ) from None
-    87       124      11000.0     88.7      0.8                      character_buffer = ""
+    87       445      28000.0     62.9      0.6                      character_buffer = ""
     88                                               raise MessageNotFoundError("Hidden message not found in the image.")
 ```
