@@ -63,28 +63,28 @@ def extraction(image: Image, bits_to_use: int = 1) -> str:
     if not 1 <= bits_to_use <= 8:
         raise InvalidBitsToUseError("Bits to use must be between 1 and 8.")
 
-    message = ""
+    message_characters = []
     index = 0
-    character_buffer = ""
+    character_buffer = []
     for y in range(image.height):
         for x in range(image.width):
-            pixel = list(image.getpixel(xy=(x, y)))
+            color_value = image.getpixel(xy=(x, y))[-1]
             for bit_index in range(bits_to_use):
-                color_value = pixel[-1]
                 extracted_bit = (color_value >> bit_index) & 1
-                character_buffer += str(extracted_bit)
+                character_buffer.append(str(extracted_bit))
                 index += 1
                 if index % 8 == 0:
-                    if character_buffer == DELIMITER:
+                    if "1" not in character_buffer:
+                        message = "".join(message_characters)
                         return message
                     try:
-                        character_code = int(character_buffer, 2)
-                        message += chr(character_code)
+                        character_code = int("".join(character_buffer), 2)
+                        message_characters.append(chr(character_code))
                     except ValueError:
                         raise MessageExtractionError(
                             f"Error extracting message at index {index}"
                         ) from None
-                    character_buffer = ""
+                    character_buffer.clear()
     raise MessageNotFoundError("Hidden message not found in the image.")
 
 
