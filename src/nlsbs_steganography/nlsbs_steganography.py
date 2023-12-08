@@ -1,6 +1,7 @@
 # Copyright (c) 2023 Mikheil Tabidze
 import math
 
+import numpy as np
 from PIL import Image
 
 DELIMITER = "00000000"
@@ -63,12 +64,14 @@ def extraction(image: Image, bits_to_use: int = 1) -> str:
     if not 1 <= bits_to_use <= 8:
         raise InvalidBitsToUseError("Bits to use must be between 1 and 8.")
 
+    image_array = np.asarray(a=image, dtype=int)
+
     message_characters = []
     index = 0
     character_buffer = []
     for y in range(image.height):
         for x in range(image.width):
-            color_value = image.getpixel(xy=(x, y))[-1]
+            color_value = image_array[y, x, -1]
             for bit_index in range(bits_to_use):
                 extracted_bit = (color_value >> bit_index) & 1
                 character_buffer.append(str(extracted_bit))
