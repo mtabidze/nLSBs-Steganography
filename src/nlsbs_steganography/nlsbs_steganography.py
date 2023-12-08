@@ -1,6 +1,7 @@
 # Copyright (c) 2023 Mikheil Tabidze
 import math
 
+import numpy as np
 from PIL import Image
 
 DELIMITER = "00000000"
@@ -31,21 +32,26 @@ def insertion(image: Image, message: str, bits_to_use: int = 1) -> Image:
     if min_required_pixels > total_image_pixels:
         raise InsufficientPixelsError("Message size exceeds image pixels capacity.")
 
+    image_array = np.array(image, dtype=np.uint8)
+    image_mode = image.mode
+
     index = 0
     for y in range(image.height):
         for x in range(image.width):
-            pixel = list(image.getpixel(xy=(x, y)))
+            pixel = image_array[y, x, :].tolist()
             for bit_index in range(bits_to_use):
                 new_bit_value = int(binary_message[index], 2)
                 color_value = pixel[-1]
                 clear_bit_color = color_value & ~(1 << bit_index)
                 new_color_value = clear_bit_color | (new_bit_value << bit_index)
                 pixel[-1] = new_color_value
-                image.putpixel(xy=(x, y), value=tuple(pixel))
+                image_array[y, x, :] = pixel
                 index += 1
                 if index >= binary_message_length:
-                    return image
-    return image
+                    new_image = Image.fromarray(obj=image_array, mode=image_mode)
+                    return new_image
+    new_image = Image.fromarray(obj=image_array, mode=image_mode)
+    return new_image
 
 
 def extraction(image: Image, bits_to_use: int = 1) -> str:
@@ -63,28 +69,30 @@ def extraction(image: Image, bits_to_use: int = 1) -> str:
     if not 1 <= bits_to_use <= 8:
         raise InvalidBitsToUseError("Bits to use must be between 1 and 8.")
 
-    message = ""
+    image_array = np.asarray(a=image, dtype=int)
+
+    message_characters = []
     index = 0
-    character_buffer = ""
+    character_buffer = []
     for y in range(image.height):
         for x in range(image.width):
-            pixel = list(image.getpixel(xy=(x, y)))
+            color_value = image_array[y, x, -1]
             for bit_index in range(bits_to_use):
-                color_value = pixel[-1]
                 extracted_bit = (color_value >> bit_index) & 1
-                character_buffer += str(extracted_bit)
+                character_buffer.append(str(extracted_bit))
                 index += 1
                 if index % 8 == 0:
-                    if character_buffer == DELIMITER:
+                    if "1" not in character_buffer:
+                        message = "".join(message_characters)
                         return message
                     try:
-                        character_code = int(character_buffer, 2)
-                        message += chr(character_code)
+                        character_code = int("".join(character_buffer), 2)
+                        message_characters.append(chr(character_code))
                     except ValueError:
                         raise MessageExtractionError(
                             f"Error extracting message at index {index}"
                         ) from None
-                    character_buffer = ""
+                    character_buffer.clear()
     raise MessageNotFoundError("Hidden message not found in the image.")
 
 
