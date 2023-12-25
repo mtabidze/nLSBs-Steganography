@@ -509,3 +509,19 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     97                                               raise MessageNotFoundError("Hidden message not found in the image.")
   ```
 </details>
+
+## Optimization #4
+TODO
+
+
+## Optimization #5
+This section presents the optimization results achieved by using the PyPy (alternative implementation of Python).
+
+### Benchmarking
+Benchmarking results for the optimized functions are provided in this section.
+
+| Function   | Repetitions | Baseline Time (seconds) | Execution Time (seconds) | Optimization Gain (%) |
+|------------|-------------|-------------------------|--------------------------|-----------------------|
+| insertion  | 1000        | 2.61                    | 4.86                     | -86.21                |
+| extraction | 1000        | 1.23                    | 2.90                     | -136.59               |
+
