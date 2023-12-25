@@ -34,4 +34,23 @@ The input image and resulting image with the message inserted.
 
 ---
 
+## Performance Measurement and Optimization
+
+| Function   | Repetitions | Baseline | Optimization 1 | Optimization 2 | Optimization 3 | Optimization 4 | Optimization 5 |
+|------------|-------------|----------|----------------|----------------|----------------|----------------|----------------|
+| insertion  | 1000        | 2.61     | 1.99           | 1.68           | 1.29           | 1.78           | 4.86           |
+| extraction | 1000        | 1.23     | 0.96           | 0.79           | 0.79           | 0.82           | 2.91           |
+
+![The optimization plot](tools/optimization/OptimizationPlot.png?raw=true)
+
+- Optimization 1: Replace string manipulations with bitwise operations.
+- Optimization 2: Utilize the NumPy library. 
+- _best_ Optimization 3: Implement stable pixel updating. 
+- Optimization 4: Employ the C extension module. 
+- Optimization 5: Leverage PyPy, an alternative implementation of Python
+
+Please read [OPTIMIZATION.md](OPTIMIZATION.md) for more details.
+
+---
+
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process.

@@ -640,7 +640,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 </details>
 
 ## Optimization #5
-This section presents the optimization results achieved by using the PyPy (alternative implementation of Python).
+This section presents the optimization results achieved by using the **PyPy** (alternative implementation of Python).
 
 ### Benchmarking
 Benchmarking results for the optimized functions are provided in this section.

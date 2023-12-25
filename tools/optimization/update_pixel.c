@@ -1,3 +1,4 @@
+// Copyright (c) 2023 Mikheil Tabidze
 #include <stdio.h>
 
 int update_color_bit_value(int color_value, int bit_index, char bit_value) {
