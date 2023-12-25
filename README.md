@@ -34,75 +34,23 @@ The input image and resulting image with the message inserted.
 
 ---
 
-## Dependency Management
+## Performance Measurement and Optimization
 
-This project is built using Python 3.11 and poetry.
+| Function   | Repetitions | Baseline | Optimization 1 | Optimization 2 | Optimization 3 | Optimization 4 | Optimization 5 |
+|------------|-------------|----------|----------------|----------------|----------------|----------------|----------------|
+| insertion  | 1000        | 2.61     | 1.99           | 1.68           | 1.29           | 1.78           | 4.86           |
+| extraction | 1000        | 1.23     | 0.96           | 0.79           | 0.79           | 0.82           | 2.91           |
 
-### Specifying Dependencies
-To add a new package to your project, run the following command:
-```shell
-poetry add <package name>
-```
-To remove a package, use this command:
-```shell
-poetry remove <package name>
-```
-### Specifying Development Dependencies
-For development-specific packages, use the following commands.
-To add a development package:
-```shell
-poetry add <package name> --group dev
-```
-To remove a development package:
-```shell
-poetry remove <package name> --group dev 
-```
-### Lock File Update
-To update the lock file, execute this command:
-```shell
-poetry lock
-```
-### Exporting Lock File to requirements.txt
-To export the lock file to a requirements.txt file, use this command:
-```shell
-poetry export --without-hashes --format=requirements.txt > requirements.txt
-```
-### Installing Dependencies
-To install project dependencies (excluding the root package), run:
-```shell
-poetry install --no-root 
-```
-### Building Package
-To build and package project, run:
-```shell
-poetry build
-```
-### Publish Package
-To publish package, run:
-```shell
-poetry publish
-```
+![The optimization plot](tools/optimization/OptimizationPlot.png?raw=true)
+
+- Optimization 1: Replace string manipulations with bitwise operations.
+- Optimization 2: Utilize the NumPy library. 
+- _best_ Optimization 3: Implement stable pixel updating. 
+- Optimization 4: Employ the C extension module. 
+- Optimization 5: Leverage PyPy, an alternative implementation of Python
+
+Please read [OPTIMIZATION.md](OPTIMIZATION.md) for more details.
+
 ---
 
-## Testing
-You can run various tests and code analysis tools using the provided scripts
-### All Tests
-To run all tests, execute:
-```shell
-./bin/run_all_tests.sh
-```
-### Unit Testing
-For unit tests, use:
-```shell
-./bin/run_unit_testing.sh
-```
-### Coverage Measurement
-Measure code coverage with:
-```shell
-./bin/run_coverage_measurement.sh
-```
-### Static Code Analysis
-Conduct static code analysis with:
-```shell
-./bin/run_static_code_analysis.sh
-```
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process.
